@@ -1,6 +1,8 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { TodoProvider } from "./contexts";
+import { TodoProvider } from "./contexts/todoContext";
+import TodoItem from "./components/TodoItem";
+import TodoForm from "./components/TodoForm";
 
 function App() {
    const [todos, setTodos] = useState([]);
@@ -18,7 +20,7 @@ function App() {
          // so if you want to use the updated state immediately after updating it, then use the callback function. in the callback, the old todos are passed in as a parameter.
          setTodos((oldTodos) => [...oldTodos, { id: Date.now(), ...todo }]);
       },
-      delete: (id) => {
+      deleteTodo: (id) => {
          // we will use filter because filter returns a new array with the filtered values.
          setTodos((oldTodos) => oldTodos.filter((item) => item.id !== id));
       },
@@ -55,15 +57,23 @@ function App() {
    }, [todos]);
 
    return (
-      <TodoProvider value={providerProps}>
-         <div className="bg-[#172842] min-h-screen py-8">
+      <TodoProvider value={{ ...providerProps }}>
+         <div className="bg-[#172842] min-h-screen rounded-2xl">
             <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
                <h1 className="text-2xl font-bold text-center mb-8 mt-2">
                   Manage Your Todos
                </h1>
-               <div className="mb-4">{/* Todo form goes here */}</div>
+               <div className="mb-4">
+                  <TodoForm />
+               </div>
                <div className="flex flex-wrap gap-y-3">
-                  {/*Loop and Add TodoItem here */}
+                  {todos.map((todo) => {
+                     return (
+                        <div key={todo.id} className="w-full">
+                           <TodoItem todo={todo} />
+                        </div>
+                     );
+                  })}
                </div>
             </div>
          </div>
